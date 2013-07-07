@@ -59,6 +59,23 @@ object Pandoc {
    */
   def apply(from: InputFormat, to: OutputFormat, in: InputStream,
     additionalArguments: String*)(
+      implicit ctx: ExecutionContext): Future[String] =
+    apply(from, to, new InputStreamReader(in, "UTF-8"))(ctx)
+
+  /**
+   * Call Pandoc with the given input format, output format and an input stream
+   * reader.
+   *
+   * @param from input format
+   * @param to   output format
+   * @param in   input stream reader
+   * @param additionalParameters additional parameters
+   * @param ctx  execution context
+   *
+   * @return resulting document as a `Future[String]`
+   */
+  def apply(from: InputFormat, to: OutputFormat, in: InputStreamReader,
+    additionalArguments: String*)(
       implicit ctx: ExecutionContext): Future[String] = {
 
     val cmd = commandFor(from, to)
@@ -69,7 +86,7 @@ object Pandoc {
     // future that writes the characters from the input stream to the output
     // stream
     future {
-      val reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))
+      val reader = new BufferedReader(in)
       val writer = new BufferedWriter(new OutputStreamWriter(
         process.getOutputStream(), "UTF-8"))
 
