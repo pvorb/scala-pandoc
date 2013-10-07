@@ -29,13 +29,38 @@ object Pandoc {
     readOutputAsString(new ProcessBuilder(commandFor(args)).start())
 
   /**
+   * Call Pandoc with the given input format, output format, output and source
+   * file path.
+   *
+   * @param from input format
+   * @param to   output format
+   * @param out  path to output file
+   * @param in   path to source file
+   * @param additionalArguments additional parameters
+   * @param ctx  execution context
+   *
+   * @return `Future[Unit]` for listening on completion
+   */
+  def apply(from: InputFormat, to: OutputFormat, out: Path, in: Path,
+    additionalArguments: String*)(
+      implicit ctx: ExecutionContext): Future[Unit] = {
+    val args = "-f" :: from.toString :: "-t" :: to.toString :: "-o" ::
+      out.toString :: in.toString :: additionalArguments.toList
+    val process = new ProcessBuilder(commandFor(args)).start()
+
+    future {
+      process.waitFor()
+    }
+  }
+
+  /**
    * Call Pandoc with the given input format, output format and source file
    * path.
    *
    * @param from input format
    * @param to   output format
    * @param in   path to source file
-   * @param additionalParameters additional parameters
+   * @param additionalArguments additional parameters
    * @param ctx  execution context
    *
    * @return resulting document as a `Future[String]`
@@ -52,7 +77,7 @@ object Pandoc {
    * @param from input format
    * @param to   output format
    * @param in   input stream
-   * @param additionalParameters additional parameters
+   * @param additionalArguments additional parameters
    * @param ctx  execution context
    *
    * @return resulting document as a `Future[String]`
@@ -69,7 +94,7 @@ object Pandoc {
    * @param from input format
    * @param to   output format
    * @param in   input stream reader
-   * @param additionalParameters additional parameters
+   * @param additionalArguments additional parameters
    * @param ctx  execution context
    *
    * @return resulting document as a `Future[String]`

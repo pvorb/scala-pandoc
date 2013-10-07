@@ -2,7 +2,7 @@ name := "pandoc"
 
 organization := "de.vorb"
 
-version := "0.1.1"
+version := "0.2.0"
 
 scalaVersion := "2.10.2"
 
@@ -37,7 +37,7 @@ pomIncludeRepository := { _ => false }
 
 pomExtra := (
   <scm>
-    <url>git@github.com:pvorb/scala-scala-pandocc.git</url>
+    <url>git@github.com:pvorb/scala-pandoc.git</url>
     <connection>scm:git:git@github.com:pvorb/scala-pandoc.git</connection>
   </scm>
   <developers>
