@@ -43,9 +43,9 @@ object PandocTest extends App {
     in = FileSystems.getDefault().getPath("src/test/resources/guide.txt"))
 
   pandocRaw.onComplete {
-    case Success(())     => println("success")
-    case Failure(error) => throw error;
+    case Success(())    => println("success")
+    case Failure(error) => throw error
   }
-  
+
   Await.result(pandocRaw, 10.seconds)
 }
