@@ -6,7 +6,7 @@ import java.nio.file.Path
 import java.util.ArrayList
 
 import scala.annotation.implicitNotFound
-import scala.concurrent.{ ExecutionContext, Future, future }
+import scala.concurrent.{ ExecutionContext, Future, future, blocking }
 
 /**
  * Wraps the Pandoc executable.
@@ -134,14 +134,16 @@ object Pandoc {
     val sb = new StringBuilder
 
     future {
-      val in = new BufferedReader(new InputStreamReader(
-        p.getInputStream(), encoding))
+      blocking {
+        val in = new BufferedReader(new InputStreamReader(
+          p.getInputStream(), encoding))
 
-      var c = in.read()
-      while (c != -1) {
-        if (c != '\r') // filter windows style line endings
-          sb += c.toChar
-        c = in.read()
+        var c = in.read()
+        while (c != -1) {
+          if (c != '\r') // filter windows style line endings
+            sb += c.toChar
+          c = in.read()
+        }
       }
 
       sb.result
