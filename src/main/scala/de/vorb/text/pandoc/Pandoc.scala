@@ -115,15 +115,17 @@ object Pandoc {
       val writer = new BufferedWriter(new OutputStreamWriter(
         process.getOutputStream(), "UTF-8"))
 
-      var c = reader.read()
-      while (c != -1) {
-        writer.write(c)
-        c = reader.read()
-      }
-      writer.flush()
+      blocking {
+        var c = reader.read()
+        while (c != -1) {
+          writer.write(c)
+          c = reader.read()
+        }
+        writer.flush()
 
-      reader.close()
-      writer.close()
+        reader.close()
+        writer.close()
+      }
     }
 
     readOutputAsString(process)
@@ -134,10 +136,10 @@ object Pandoc {
     val sb = new StringBuilder
 
     future {
-      blocking {
-        val in = new BufferedReader(new InputStreamReader(
-          p.getInputStream(), encoding))
+      val in = new BufferedReader(new InputStreamReader(
+        p.getInputStream(), encoding))
 
+      blocking {
         var c = in.read()
         while (c != -1) {
           if (c != '\r') // filter windows style line endings
